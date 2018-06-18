@@ -37,6 +37,10 @@ public class HiveDynamoDBTypeFactory extends DynamoDBTypeFactory {
   private static final HiveDynamoDBType STRING_SET_TYPE = new HiveDynamoDBStringSetType();
   private static final HiveDynamoDBType BINARY_SET_TYPE = new HiveDynamoDBBinarySetType();
 
+
+  private static final HiveDynamoDBType NUMBER_LIST_TYPE = new HiveDynamoDBListType();
+  private static final HiveDynamoDBType STRING_LIST_TYPE = new HiveDynamoDBListType();
+
   private static final Map<String, HiveDynamoDBType> HIVE_TYPE_MAP = new HashMap<>();
 
   static {
@@ -51,6 +55,10 @@ public class HiveDynamoDBTypeFactory extends DynamoDBTypeFactory {
     HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.DOUBLE_ARRAY_TYPE_NAME, NUMBER_SET_TYPE);
     HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.STRING_ARRAY_TYPE_NAME, STRING_SET_TYPE);
     HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.BINARY_ARRAY_TYPE_NAME, BINARY_SET_TYPE);
+
+    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.BIGINT_ARRAY_LIST_TYPE_NAME, NUMBER_LIST_TYPE);
+    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.DOUBLE_ARRAY_LIST_TYPE_NAME, NUMBER_LIST_TYPE);
+    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.STRING_ARRAY_LIST_TYPE_NAME, STRING_LIST_TYPE);
 
     HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.ITEM_MAP_TYPE_NAME, DYNAMODB_ITEM_TYPE);
   }

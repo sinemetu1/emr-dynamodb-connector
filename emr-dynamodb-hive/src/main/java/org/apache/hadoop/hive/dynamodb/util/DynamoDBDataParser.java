@@ -62,7 +62,7 @@ public class DynamoDBDataParser {
   }
 
   /**
-   * This method currently supports StringSet and NumberSet data type of DynamoDB
+   * This method currently supports StringSet, NumberSet, and List data type of DynamoDB
    */
   public List<String> getListAttribute(Object data, ObjectInspector objectInspector, String
       ddType) {
@@ -84,6 +84,8 @@ public class DynamoDBDataParser {
         itemList.add(getString(dataItem, itemObjectInspector));
       } else if (ddType.equals("NS")) {
         itemList.add(getNumber(dataItem, itemObjectInspector));
+      } else if (ddType.equals("L")) {
+        itemList.add(getString(dataItem, itemObjectInspector));
       } else {
         throw new RuntimeException("Unsupported dynamodb type: " + ddType);
       }
