@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file
  * except in compliance with the License. A copy of the License is located at
  *
- *     http://aws.amazon.com/apache2.0/
+ *     http://aws.amazon.com/apache2.0/
  *
  * or in the "LICENSE.TXT" file accompanying this file. This file is distributed on an "AS IS"
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -28,7 +28,7 @@ import java.util.Random;
 
 public class DynamoDBTestUtils {
 
-  private static final String[] attributeTypes = new String[]{"S", "SS", "N", "NS", "B", "BS"};
+  private static final String[] attributeTypes = new String[]{"S", "SS", "N", "NS", "L", "B", "BS"};
   private static final int SEED = 87394;
   private static final int MAX_BYTE_ARRAY_LENGTH = 2048;
   private static final int STRING_LENGTH = 1024;
@@ -70,6 +70,21 @@ public class DynamoDBTestUtils {
     return strings;
   }
 
+  public static List<AttributeValue> getRandomStringsAndNumbers() {
+    int count = rnd.nextInt(LIST_ATTRIBUTES_COUNT) + 1;
+    List<AttributeValue> objs = new ArrayList<>(count);
+
+    for (int i = 0; i < count; i++) {
+      if (rnd.nextInt(10) < 5) {
+        objs.add(new AttributeValue().withN(getRandomNumber()));
+      } else {
+        objs.add(new AttributeValue().withS(getRandomString()));
+      }
+    }
+
+    return objs;
+  }
+
   public static ByteBuffer getRandomByteBuffer() {
     int bufferSize = rnd.nextInt(MAX_BYTE_ARRAY_LENGTH) + 1;
     byte[] buffer = new byte[bufferSize];
@@ -90,11 +105,14 @@ public class DynamoDBTestUtils {
     return buffers;
   }
 
+  public static Map<String, AttributeValue> aRandomMap = getRandomItem();
+
   public static Map<String, AttributeValue> getRandomItem() {
     Map<String, AttributeValue> item = new HashMap<>();
     item.put("S", new AttributeValue().withS(getRandomString()));
     item.put("SS", new AttributeValue().withSS(getRandomStrings()));
     item.put("N", new AttributeValue().withN(getRandomNumber()));
+    item.put("L", new AttributeValue().withL(new AttributeValue().withM(aRandomMap)));
     item.put("NS", new AttributeValue().withNS(getRandomNumbers()));
     item.put("B", new AttributeValue().withB(getRandomByteBuffer()));
     item.put("BS", new AttributeValue().withBS(getRandomByteBuffers()));
