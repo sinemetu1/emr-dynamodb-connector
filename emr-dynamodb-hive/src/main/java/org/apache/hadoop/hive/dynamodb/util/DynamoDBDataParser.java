@@ -85,7 +85,11 @@ public class DynamoDBDataParser {
       } else if (ddType.equals("NS")) {
         itemList.add(getNumber(dataItem, itemObjectInspector));
       } else if (ddType.equals("L")) {
-        itemList.add(getString(dataItem, itemObjectInspector));
+        if (dataItem instanceof String) {
+          itemList.add(getString(dataItem, itemObjectInspector));
+        } else {
+          itemList.add(getNumber(dataItem, itemObjectInspector));
+        }
       } else {
         throw new RuntimeException("Unsupported dynamodb type: " + ddType);
       }

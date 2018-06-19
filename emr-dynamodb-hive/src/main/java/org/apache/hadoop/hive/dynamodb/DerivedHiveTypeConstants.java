@@ -29,13 +29,13 @@ public class DerivedHiveTypeConstants {
   public static final String BINARY_ARRAY_TYPE_NAME = Constants.LIST_TYPE_NAME + "<" + Constants
       .BINARY_TYPE_NAME + ">";
 
-  public static final String BIGINT_ARRAY_LIST_TYPE_NAME = "array_list<" + Constants
+  public static final String BIGINT_ARRAY_LIST_TYPE_NAME = Constants.LIST_TYPE_NAME + "<" + Constants
     .BIGINT_TYPE_NAME + ">";
 
-  public static final String DOUBLE_ARRAY_LIST_TYPE_NAME = "array_list<" + Constants
+  public static final String DOUBLE_ARRAY_LIST_TYPE_NAME = Constants.LIST_TYPE_NAME + "<" + Constants
     .DOUBLE_TYPE_NAME + ">";
 
-  public static final String STRING_ARRAY_LIST_TYPE_NAME = "array_list<" + Constants
+  public static final String STRING_ARRAY_LIST_TYPE_NAME = Constants.LIST_TYPE_NAME + "<" + Constants
     .STRING_TYPE_NAME + ">";
 
   /* A map<string, string> map. */

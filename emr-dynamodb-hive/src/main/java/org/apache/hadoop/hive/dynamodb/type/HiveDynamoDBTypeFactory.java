@@ -51,9 +51,9 @@ public class HiveDynamoDBTypeFactory extends DynamoDBTypeFactory {
     HIVE_TYPE_MAP.put(serdeConstants.BOOLEAN_TYPE_NAME, BOOLEAN_TYPE);
 
 
-    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.BIGINT_ARRAY_TYPE_NAME, NUMBER_SET_TYPE);
-    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.DOUBLE_ARRAY_TYPE_NAME, NUMBER_SET_TYPE);
-    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.STRING_ARRAY_TYPE_NAME, STRING_SET_TYPE);
+//    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.BIGINT_ARRAY_TYPE_NAME, NUMBER_SET_TYPE);
+//    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.DOUBLE_ARRAY_TYPE_NAME, NUMBER_SET_TYPE);
+//    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.STRING_ARRAY_TYPE_NAME, STRING_SET_TYPE);
     HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.BINARY_ARRAY_TYPE_NAME, BINARY_SET_TYPE);
 
     HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.BIGINT_ARRAY_LIST_TYPE_NAME, NUMBER_LIST_TYPE);
