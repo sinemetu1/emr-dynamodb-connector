@@ -13,9 +13,11 @@
 
 package org.apache.hadoop.hive.dynamodb.util;
 
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import org.apache.hadoop.hive.dynamodb.DerivedHiveTypeConstants;
 import org.apache.hadoop.hive.serde.Constants;
 import org.apache.hadoop.hive.serde2.objectinspector.ListObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.MapObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.BooleanObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.DoubleObjectInspector;
@@ -25,8 +27,11 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.BinaryObjectInspe
 import org.apache.hadoop.io.BytesWritable;
 
 import java.nio.ByteBuffer;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class DynamoDBDataParser {
 
@@ -60,11 +65,63 @@ public class DynamoDBDataParser {
           + " Type name: " + objectInspector.getTypeName());
     }
   }
+  public Map<String, Object> getMap(Object data, ObjectInspector objectInspector) {
+    if (objectInspector instanceof MapObjectInspector) {
+      Map<?, ?> aMap = ((MapObjectInspector) objectInspector).getMap(data);
+      for (Map.Entry<?,?> e : aMap.entrySet()) {
+        if (!(e.getKey() instanceof String)) {
+          throw new RuntimeException("Unsupported map key type: " + e.getKey().getClass().getName());
+        }
+      }
+      return (Map<String, Object>)aMap;
+    } else {
+      throw new RuntimeException("Unknown object inspector type: " + objectInspector.getCategory()
+        + " Type name: " + objectInspector.getTypeName());
+    }
+  }
+
+  public List<Object> getListAttribute(Object data, ObjectInspector objectInspector, String
+    ddType) {
+    ListObjectInspector listObjectInspector = (ListObjectInspector) objectInspector;
+    List<?> dataList = listObjectInspector.getList(data);
+
+    if (dataList == null) {
+      return null;
+    }
+
+    ObjectInspector itemObjectInspector = listObjectInspector.getListElementObjectInspector();
+    List<Object> itemList = new ArrayList<Object>();
+    // we know hive arrays cannot contain multiple types so we cache the first
+    // one and assume all others are the same
+    Class listType = null;
+    for (Object dataItem : dataList) {
+      if (dataItem == null) {
+        throw new RuntimeException("Null element found in list: " + dataList);
+      }
+
+      if (ddType.equals("L")) {
+        if (listType == String.class || dataItem instanceof String) {
+          itemList.add(getString(dataItem, itemObjectInspector));
+          listType = String.class;
+        } if (listType == Map.class || dataItem instanceof Map) {
+          itemList.add(getMap(dataItem, itemObjectInspector));
+          listType = Map.class;
+        } else {
+          itemList.add(getNumber(dataItem, itemObjectInspector));
+          listType = Double.class;
+        }
+      } else {
+        throw new RuntimeException("Unsupported dynamodb type: " + ddType);
+      }
+    }
+
+    return itemList;
+  }
 
   /**
-   * This method currently supports StringSet, NumberSet, and List data type of DynamoDB
+   * This method currently supports StringSet and NumberSet data type of DynamoDB
    */
-  public List<String> getListAttribute(Object data, ObjectInspector objectInspector, String
+  public List<String> getSetAttribute(Object data, ObjectInspector objectInspector, String
       ddType) {
     ListObjectInspector listObjectInspector = (ListObjectInspector) objectInspector;
     List<?> dataList = listObjectInspector.getList(data);
@@ -84,12 +141,6 @@ public class DynamoDBDataParser {
         itemList.add(getString(dataItem, itemObjectInspector));
       } else if (ddType.equals("NS")) {
         itemList.add(getNumber(dataItem, itemObjectInspector));
-      } else if (ddType.equals("L")) {
-        if (dataItem instanceof String) {
-          itemList.add(getString(dataItem, itemObjectInspector));
-        } else {
-          itemList.add(getNumber(dataItem, itemObjectInspector));
-        }
       } else {
         throw new RuntimeException("Unsupported dynamodb type: " + ddType);
       }

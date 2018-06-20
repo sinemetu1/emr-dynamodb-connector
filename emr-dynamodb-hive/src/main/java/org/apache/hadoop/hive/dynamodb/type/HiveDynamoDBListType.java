@@ -16,7 +16,10 @@ import org.apache.hadoop.dynamodb.type.DynamoDBListType;
 import org.apache.hadoop.hive.dynamodb.util.DynamoDBDataParser;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HiveDynamoDBListType extends DynamoDBListType implements HiveDynamoDBType {
 
@@ -24,16 +27,47 @@ public class HiveDynamoDBListType extends DynamoDBListType implements HiveDynamo
 
   @Override
   public AttributeValue getDynamoDBData(Object data, ObjectInspector objectInspector) {
-    List<String> values = parser.getListAttribute(data, objectInspector, getDynamoDBType());
+    List<Object> values = parser.getListAttribute(data, objectInspector, getDynamoDBType());
     if ((values != null) && (!values.isEmpty())) {
-      AttributeValue av = new AttributeValue();
-      for (String ele : values) {
-        av.withL(new AttributeValue(ele));
+      List<AttributeValue> toSet = new ArrayList<AttributeValue>();
+      AttributeValue outer = new AttributeValue();
+      for (Object v : values) {
+        toSet.add(parseObject(v));
       }
-      return av;
+      return outer.withL(toSet);
     } else {
       return null;
     }
+  }
+
+  private AttributeValue parseObject(Object o) {
+    if (o instanceof String) {
+      return parseString(o);
+    } else if (o instanceof Map) {
+      return parseMap(o);
+    } else {
+      throw new RuntimeException("Unsupported type: " + o.getClass().getName());
+    }
+  }
+
+  private AttributeValue parseString(Object o) {
+    String s = (String) o;
+    try {
+      Double.parseDouble(s);
+      return new AttributeValue().withN(s);
+    } catch (NumberFormatException ex) {
+      return new AttributeValue().withS(s);
+    }
+  }
+
+  private AttributeValue parseMap(Object o) {
+    Map<String, Object> m = (Map<String, Object>) o;
+    Map<String, AttributeValue> toSet = new HashMap<String, AttributeValue>(m.size());
+    for (Map.Entry entry : m.entrySet()) {
+      String k = (String) entry.getKey();
+      toSet.put(k, parseObject(entry.getValue()));
+    }
+    return new AttributeValue().withM(toSet);
   }
 
   @Override

@@ -27,7 +27,7 @@ public class HiveDynamoDBStringSetType extends DynamoDBStringSetType implements 
 
   @Override
   public AttributeValue getDynamoDBData(Object data, ObjectInspector objectInspector) {
-    List<String> values = parser.getListAttribute(data, objectInspector, getDynamoDBType());
+    List<String> values = parser.getSetAttribute(data, objectInspector, getDynamoDBType());
     if ((values != null) && (!values.isEmpty())) {
       return new AttributeValue().withSS(values);
     } else {
