@@ -13,9 +13,15 @@
 
 package org.apache.hadoop.hive.dynamodb.util;
 
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.apache.hadoop.hive.dynamodb.DynamoDBStorageHandler;
 import org.apache.hadoop.hive.dynamodb.DerivedHiveTypeConstants;
 import org.apache.hadoop.hive.serde.Constants;
+import org.apache.hadoop.hive.serde2.lazy.LazyDouble;
+import org.apache.hadoop.hive.serde2.lazy.LazyMap;
+import org.apache.hadoop.hive.serde2.lazy.LazyString;
 import org.apache.hadoop.hive.serde2.objectinspector.ListObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.MapObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
@@ -27,13 +33,11 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.BinaryObjectInspe
 import org.apache.hadoop.io.BytesWritable;
 
 import java.nio.ByteBuffer;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class DynamoDBDataParser {
+
+  private static final Log log = LogFactory.getLog(DynamoDBStorageHandler.class);
 
   public String getNumber(Object data, ObjectInspector objectInspector) {
     if (objectInspector instanceof DoubleObjectInspector) {
@@ -42,7 +46,7 @@ public class DynamoDBDataParser {
       return Long.toString(((LongObjectInspector) objectInspector).get(data));
     } else {
       throw new RuntimeException("Unknown object inspector type: " + objectInspector.getCategory()
-          + " Type name: " + objectInspector.getTypeName());
+          + " Type name: " + objectInspector.getTypeName() + " class:" + data.getClass().getName());
     }
   }
 
@@ -67,13 +71,19 @@ public class DynamoDBDataParser {
   }
   public Map<String, Object> getMap(Object data, ObjectInspector objectInspector) {
     if (objectInspector instanceof MapObjectInspector) {
-      Map<?, ?> aMap = ((MapObjectInspector) objectInspector).getMap(data);
-      for (Map.Entry<?,?> e : aMap.entrySet()) {
-        if (!(e.getKey() instanceof String)) {
-          throw new RuntimeException("Unsupported map key type: " + e.getKey().getClass().getName());
-        }
+      MapObjectInspector mapOI = ((MapObjectInspector) objectInspector);
+      Map<?, ?> aMap = mapOI.getMap(data);
+      Map<String, Object> item = new HashMap<String, Object>();
+      StringObjectInspector mapKeyObjectInspector = (StringObjectInspector) mapOI
+        .getMapKeyObjectInspector();
+
+      // borrowed from HiveDynamoDbItemType
+      for (Map.Entry<?,?> entry : aMap.entrySet()) {
+        String dynamoDBAttributeName = mapKeyObjectInspector.getPrimitiveJavaObject(entry.getKey());
+        Object dynamoDBAttributeValue = entry.getValue();
+        item.put(dynamoDBAttributeName, dynamoDBAttributeValue);
       }
-      return (Map<String, Object>)aMap;
+      return item;
     } else {
       throw new RuntimeException("Unknown object inspector type: " + objectInspector.getCategory()
         + " Type name: " + objectInspector.getTypeName());
@@ -99,19 +109,21 @@ public class DynamoDBDataParser {
         throw new RuntimeException("Null element found in list: " + dataList);
       }
 
+      log.warn("dataItem class:" + dataItem.getClass().getName());
       if (ddType.equals("L")) {
-        if (listType == String.class || dataItem instanceof String) {
+        if (listType == String.class || dataItem instanceof LazyString) {
           itemList.add(getString(dataItem, itemObjectInspector));
-          listType = String.class;
-        } if (listType == Map.class || dataItem instanceof Map) {
+          listType = LazyString.class;
+        } if (listType == LazyMap.class || dataItem instanceof LazyMap) {
           itemList.add(getMap(dataItem, itemObjectInspector));
-          listType = Map.class;
+          listType = LazyMap.class;
         } else {
           itemList.add(getNumber(dataItem, itemObjectInspector));
-          listType = Double.class;
+          listType = LazyDouble.class;
         }
       } else {
-        throw new RuntimeException("Unsupported dynamodb type: " + ddType);
+        throw new RuntimeException("Unsupported dynamodb type: " + ddType +
+          " dataItem class: " + dataItem.getClass().getName());
       }
     }
 

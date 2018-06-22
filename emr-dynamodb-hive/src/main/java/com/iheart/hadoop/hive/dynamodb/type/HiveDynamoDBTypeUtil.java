@@ -1,0 +1,46 @@
+package com.iheart.hadoop.hive.dynamodb.type;
+
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import org.apache.hadoop.hive.serde2.lazy.LazyDouble;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class HiveDynamoDBTypeUtil {
+
+  public static AttributeValue parseObject(Object o) {
+    if (o instanceof String) {
+      return parseString(o);
+    } else if (o instanceof LazyDouble) {
+      return new AttributeValue().withN(o.toString());
+    } else if (o instanceof Map) {
+      return parseMap(o);
+    } else {
+      throw new RuntimeException("Unsupported type: " + o.getClass().getName());
+    }
+  }
+
+  public static AttributeValue parseString(Object o) {
+    String s = (String) o;
+    try {
+      Double.parseDouble(s);
+      return new AttributeValue().withN(s);
+    } catch (NumberFormatException ex) {
+      return new AttributeValue().withS(s);
+    }
+  }
+
+  public static AttributeValue parseMap(Map<String, Object> m) {
+    Map<String, AttributeValue> toSet = new HashMap<String, AttributeValue>(m.size());
+    for (Map.Entry entry : m.entrySet()) {
+      String k = (String) entry.getKey();
+      toSet.put(k, parseObject(entry.getValue()));
+    }
+    return new AttributeValue().withM(toSet);
+  }
+
+  public static AttributeValue parseMap(Object o) {
+    return parseMap((Map<String, Object>) o);
+  }
+
+}

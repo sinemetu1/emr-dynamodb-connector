@@ -9,11 +9,12 @@
  * License for the specific language governing permissions and limitations under the License.
  */
 
-package org.apache.hadoop.dynamodb.type;
+package com.iheart.hadoop.dynamodb.type;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
 import org.apache.hadoop.dynamodb.key.DynamoDBKey;
+import org.apache.hadoop.dynamodb.type.DynamoDBType;
 
 public class DynamoDBListType implements DynamoDBType {
 

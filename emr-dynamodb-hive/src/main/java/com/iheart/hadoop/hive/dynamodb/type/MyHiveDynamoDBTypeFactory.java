@@ -1,5 +1,4 @@
 /**
- * Copyright 2012-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file
  * except in compliance with the License. A copy of the License is located at
@@ -11,23 +10,18 @@
  * License for the specific language governing permissions and limitations under the License.
  */
 
-package org.apache.hadoop.hive.dynamodb.type;
+package com.iheart.hadoop.hive.dynamodb.type;
 
-import com.iheart.hadoop.hive.dynamodb.type.HiveDynamoDBListType;
-import com.iheart.hadoop.hive.dynamodb.type.HiveDynamoDBMapType;
-import org.apache.hadoop.dynamodb.type.DynamoDBTypeFactory;
+import org.apache.hadoop.hive.dynamodb.type.HiveDynamoDBTypeFactory;
+
 import org.apache.hadoop.hive.dynamodb.DerivedHiveTypeConstants;
+import org.apache.hadoop.hive.dynamodb.type.*;
 import org.apache.hadoop.hive.serde.serdeConstants;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class HiveDynamoDBTypeFactory extends DynamoDBTypeFactory {
-  /* Hive Map type encapsulates a DynamoDB item */
-
-  public static final HiveDynamoDBType DYNAMODB_ITEM_TYPE = new HiveDynamoDBItemType();
-
-  private static final String HIVE_DYNAMODB_ITEM_MAP_TYPE = "map<string,string>";
+public class MyHiveDynamoDBTypeFactory extends HiveDynamoDBTypeFactory {
 
   private static final HiveDynamoDBType STRING_TYPE = new HiveDynamoDBStringType();
   private static final HiveDynamoDBType NUMBER_TYPE = new HiveDynamoDBNumberType();
@@ -69,24 +63,5 @@ public class HiveDynamoDBTypeFactory extends DynamoDBTypeFactory {
     HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.LIST_STRING_BIG_DOUBLE_MAP_TYPE_NAME, LIST_ITEM_TYPE);
 
     HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.ITEM_MAP_TYPE_NAME, DYNAMODB_ITEM_TYPE);
-  }
-
-  public static HiveDynamoDBType getTypeObjectFromHiveType(String hiveType) {
-    return HIVE_TYPE_MAP.get(hiveType.toLowerCase());
-  }
-
-  public static Map<String, HiveDynamoDBType> getTypeMap() {
-    return HIVE_TYPE_MAP;
-  }
-
-  /**
-   * Checks if the given hiveType is a map type. Does not check key and value types.
-   *
-   * @param hiveType hiveType to check
-   * @return {@code true} if the provided hiveType is a map type, {@code false} otherwise
-   */
-  public static boolean isHiveDynamoDBItemMapType(String hiveType) {
-    return HIVE_DYNAMODB_ITEM_MAP_TYPE.equals(hiveType.toLowerCase());
-
   }
 }
