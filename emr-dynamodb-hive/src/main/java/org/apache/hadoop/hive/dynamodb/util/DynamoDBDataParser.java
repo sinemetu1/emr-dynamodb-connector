@@ -29,7 +29,8 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.BinaryObjectInspe
 import org.apache.hadoop.io.BytesWritable;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DynamoDBDataParser {
 
@@ -40,7 +41,7 @@ public class DynamoDBDataParser {
       return Long.toString(((LongObjectInspector) objectInspector).get(data));
     } else {
       throw new RuntimeException("Unknown object inspector type: " + objectInspector.getCategory()
-          + " Type name: " + objectInspector.getTypeName() + " class:" + data.getClass().getName());
+          + " Type name: " + objectInspector.getTypeName());
     }
   }
 
