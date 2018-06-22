@@ -32,8 +32,8 @@ public class HiveDynamoDBTypeUtil {
 
   public static AttributeValue parseMap(Map<String, Object> m) {
     Map<String, AttributeValue> toSet = new HashMap<String, AttributeValue>(m.size());
-    for (Map.Entry entry : m.entrySet()) {
-      String k = (String) entry.getKey();
+    for (Map.Entry<String, Object> entry : m.entrySet()) {
+      String k = entry.getKey();
       toSet.put(k, parseObject(entry.getValue()));
     }
     return new AttributeValue().withM(toSet);
