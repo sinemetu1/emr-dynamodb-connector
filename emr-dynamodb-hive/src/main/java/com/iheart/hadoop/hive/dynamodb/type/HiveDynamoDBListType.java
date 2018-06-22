@@ -13,8 +13,8 @@ package com.iheart.hadoop.hive.dynamodb.type;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.iheart.hadoop.dynamodb.type.DynamoDBListType;
+import com.iheart.hadoop.hive.dynamodb.util.MyDynamoDBDataParser;
 import org.apache.hadoop.hive.dynamodb.type.HiveDynamoDBType;
-import org.apache.hadoop.hive.dynamodb.util.DynamoDBDataParser;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import static com.iheart.hadoop.hive.dynamodb.type.HiveDynamoDBTypeUtil.parseObj
 
 public class HiveDynamoDBListType extends DynamoDBListType implements HiveDynamoDBType {
 
-  private final DynamoDBDataParser parser = new DynamoDBDataParser();
+  private final MyDynamoDBDataParser parser = new MyDynamoDBDataParser();
 
   @Override
   public AttributeValue getDynamoDBData(Object data, ObjectInspector objectInspector) {

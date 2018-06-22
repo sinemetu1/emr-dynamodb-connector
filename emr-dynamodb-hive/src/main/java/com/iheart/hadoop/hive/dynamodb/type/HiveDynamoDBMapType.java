@@ -12,6 +12,7 @@
 package com.iheart.hadoop.hive.dynamodb.type;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.iheart.hadoop.hive.dynamodb.util.MyDynamoDBDataParser;
 import org.apache.hadoop.hive.dynamodb.type.HiveDynamoDBItemType;
 import org.apache.hadoop.hive.dynamodb.util.DynamoDBDataParser;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
@@ -20,7 +21,7 @@ import static com.iheart.hadoop.hive.dynamodb.type.HiveDynamoDBTypeUtil.parseMap
 
 public class HiveDynamoDBMapType  extends HiveDynamoDBItemType {
 
-  private final DynamoDBDataParser parser = new DynamoDBDataParser();
+  private final MyDynamoDBDataParser parser = new MyDynamoDBDataParser();
 
   @Override
   public AttributeValue getDynamoDBData(Object data, ObjectInspector objectInspector) {

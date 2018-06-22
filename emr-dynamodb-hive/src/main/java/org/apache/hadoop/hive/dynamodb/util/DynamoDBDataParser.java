@@ -19,11 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hive.dynamodb.DynamoDBStorageHandler;
 import org.apache.hadoop.hive.dynamodb.DerivedHiveTypeConstants;
 import org.apache.hadoop.hive.serde.Constants;
-import org.apache.hadoop.hive.serde2.lazy.LazyDouble;
-import org.apache.hadoop.hive.serde2.lazy.LazyMap;
-import org.apache.hadoop.hive.serde2.lazy.LazyString;
 import org.apache.hadoop.hive.serde2.objectinspector.ListObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.MapObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.BooleanObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.DoubleObjectInspector;
@@ -36,8 +32,6 @@ import java.nio.ByteBuffer;
 import java.util.*;
 
 public class DynamoDBDataParser {
-
-  private static final Log log = LogFactory.getLog(DynamoDBStorageHandler.class);
 
   public String getNumber(Object data, ObjectInspector objectInspector) {
     if (objectInspector instanceof DoubleObjectInspector) {
@@ -69,66 +63,7 @@ public class DynamoDBDataParser {
           + " Type name: " + objectInspector.getTypeName());
     }
   }
-  public Map<String, Object> getMap(Object data, ObjectInspector objectInspector) {
-    if (objectInspector instanceof MapObjectInspector) {
-      MapObjectInspector mapOI = ((MapObjectInspector) objectInspector);
-      Map<?, ?> aMap = mapOI.getMap(data);
-      Map<String, Object> item = new HashMap<String, Object>();
-      StringObjectInspector mapKeyObjectInspector = (StringObjectInspector) mapOI
-        .getMapKeyObjectInspector();
 
-      // borrowed from HiveDynamoDbItemType
-      for (Map.Entry<?,?> entry : aMap.entrySet()) {
-        String dynamoDBAttributeName = mapKeyObjectInspector.getPrimitiveJavaObject(entry.getKey());
-        Object dynamoDBAttributeValue = entry.getValue();
-        item.put(dynamoDBAttributeName, dynamoDBAttributeValue);
-      }
-      return item;
-    } else {
-      throw new RuntimeException("Unknown object inspector type: " + objectInspector.getCategory()
-        + " Type name: " + objectInspector.getTypeName());
-    }
-  }
-
-  public List<Object> getListAttribute(Object data, ObjectInspector objectInspector, String
-    ddType) {
-    ListObjectInspector listObjectInspector = (ListObjectInspector) objectInspector;
-    List<?> dataList = listObjectInspector.getList(data);
-
-    if (dataList == null) {
-      return null;
-    }
-
-    ObjectInspector itemObjectInspector = listObjectInspector.getListElementObjectInspector();
-    List<Object> itemList = new ArrayList<Object>();
-    // we know hive arrays cannot contain multiple types so we cache the first
-    // one and assume all others are the same
-    Class listType = null;
-    for (Object dataItem : dataList) {
-      if (dataItem == null) {
-        throw new RuntimeException("Null element found in list: " + dataList);
-      }
-
-      log.warn("dataItem class:" + dataItem.getClass().getName());
-      if (ddType.equals("L")) {
-        if (listType == String.class || dataItem instanceof LazyString) {
-          itemList.add(getString(dataItem, itemObjectInspector));
-          listType = LazyString.class;
-        } if (listType == LazyMap.class || dataItem instanceof LazyMap) {
-          itemList.add(getMap(dataItem, itemObjectInspector));
-          listType = LazyMap.class;
-        } else {
-          itemList.add(getNumber(dataItem, itemObjectInspector));
-          listType = LazyDouble.class;
-        }
-      } else {
-        throw new RuntimeException("Unsupported dynamodb type: " + ddType +
-          " dataItem class: " + dataItem.getClass().getName());
-      }
-    }
-
-    return itemList;
-  }
 
   /**
    * This method currently supports StringSet and NumberSet data type of DynamoDB
