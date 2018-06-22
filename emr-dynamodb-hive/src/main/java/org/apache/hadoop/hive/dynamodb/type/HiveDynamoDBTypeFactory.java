@@ -13,8 +13,6 @@
 
 package org.apache.hadoop.hive.dynamodb.type;
 
-import com.iheart.hadoop.hive.dynamodb.type.HiveDynamoDBListType;
-import com.iheart.hadoop.hive.dynamodb.type.HiveDynamoDBMapType;
 import org.apache.hadoop.dynamodb.type.DynamoDBTypeFactory;
 import org.apache.hadoop.hive.dynamodb.DerivedHiveTypeConstants;
 import org.apache.hadoop.hive.serde.serdeConstants;
@@ -39,12 +37,6 @@ public class HiveDynamoDBTypeFactory extends DynamoDBTypeFactory {
   private static final HiveDynamoDBType STRING_SET_TYPE = new HiveDynamoDBStringSetType();
   private static final HiveDynamoDBType BINARY_SET_TYPE = new HiveDynamoDBBinarySetType();
 
-
-  private static final HiveDynamoDBType NUMBER_LIST_TYPE = new HiveDynamoDBListType();
-  private static final HiveDynamoDBType STRING_LIST_TYPE = new HiveDynamoDBListType();
-  private static final HiveDynamoDBType LIST_ITEM_TYPE = new HiveDynamoDBListType();
-  private static final HiveDynamoDBType MAP_TYPE = new HiveDynamoDBMapType();
-
   private static final Map<String, HiveDynamoDBType> HIVE_TYPE_MAP = new HashMap<>();
 
   static {
@@ -55,18 +47,10 @@ public class HiveDynamoDBTypeFactory extends DynamoDBTypeFactory {
     HIVE_TYPE_MAP.put(serdeConstants.BOOLEAN_TYPE_NAME, BOOLEAN_TYPE);
 
 
-//    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.BIGINT_ARRAY_TYPE_NAME, NUMBER_SET_TYPE);
-//    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.DOUBLE_ARRAY_TYPE_NAME, NUMBER_SET_TYPE);
-//    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.STRING_ARRAY_TYPE_NAME, STRING_SET_TYPE);
+    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.BIGINT_ARRAY_TYPE_NAME, NUMBER_SET_TYPE);
+    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.DOUBLE_ARRAY_TYPE_NAME, NUMBER_SET_TYPE);
+    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.STRING_ARRAY_TYPE_NAME, STRING_SET_TYPE);
     HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.BINARY_ARRAY_TYPE_NAME, BINARY_SET_TYPE);
-
-    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.BIGINT_ARRAY_LIST_TYPE_NAME, NUMBER_LIST_TYPE);
-    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.DOUBLE_ARRAY_LIST_TYPE_NAME, NUMBER_LIST_TYPE);
-    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.STRING_ARRAY_LIST_TYPE_NAME, STRING_LIST_TYPE);
-    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.LIST_ITEM_MAP_TYPE_NAME, LIST_ITEM_TYPE);
-    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.STRING_BIGINT_MAP_TYPE_NAME, MAP_TYPE);
-    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.LIST_STRING_BIG_INT_MAP_TYPE_NAME, LIST_ITEM_TYPE);
-    HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.LIST_STRING_BIG_DOUBLE_MAP_TYPE_NAME, LIST_ITEM_TYPE);
 
     HIVE_TYPE_MAP.put(DerivedHiveTypeConstants.ITEM_MAP_TYPE_NAME, DYNAMODB_ITEM_TYPE);
   }
@@ -75,9 +59,9 @@ public class HiveDynamoDBTypeFactory extends DynamoDBTypeFactory {
     return HIVE_TYPE_MAP.get(hiveType.toLowerCase());
   }
 
-  public static Map<String, HiveDynamoDBType> getTypeMap() {
-    return HIVE_TYPE_MAP;
-  }
+//  public static Map<String, HiveDynamoDBType> getTypeMap() {
+//    return HIVE_TYPE_MAP;
+//  }
 
   /**
    * Checks if the given hiveType is a map type. Does not check key and value types.

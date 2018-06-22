@@ -269,7 +269,7 @@ public class DynamoDBStorageHandler implements HiveMetaHook, HiveStoragePredicat
     }
   }
 
-  void checkTableSchemaType(TableDescription tableDescription, Table table) throws MetaException {
+  public void checkTableSchemaType(TableDescription tableDescription, Table table) throws MetaException {
     List<FieldSchema> tableSchema = table.getSd().getCols();
 
     for (FieldSchema fieldSchema : tableSchema) {
