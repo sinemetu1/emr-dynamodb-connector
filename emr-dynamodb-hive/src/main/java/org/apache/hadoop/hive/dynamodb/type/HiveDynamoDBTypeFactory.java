@@ -59,10 +59,6 @@ public class HiveDynamoDBTypeFactory extends DynamoDBTypeFactory {
     return HIVE_TYPE_MAP.get(hiveType.toLowerCase());
   }
 
-//  public static Map<String, HiveDynamoDBType> getTypeMap() {
-//    return HIVE_TYPE_MAP;
-//  }
-
   /**
    * Checks if the given hiveType is a map type. Does not check key and value types.
    *

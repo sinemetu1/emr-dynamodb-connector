@@ -55,8 +55,9 @@ public class MyDynamoDBStorageHandlerTest extends DynamoDBStorageHandlerTest {
     cols.add(new FieldSchema("col1", "map<string,bigint>", ""));
     cols.add(new FieldSchema("col2", "array<map<string,bigint>>", ""));
     cols.add(new FieldSchema("col3", "array<map<string,double>>", ""));
-    cols.add(new FieldSchema("col4", "array<bigint>", ""));
-    cols.add(new FieldSchema("col5", "array<double>", ""));
+    cols.add(new FieldSchema("col4", "array<map<string,string>>", ""));
+    cols.add(new FieldSchema("col5", "array<bigint>", ""));
+    cols.add(new FieldSchema("col6", "array<double>", ""));
     cols.add(new FieldSchema("hashKey", "string", ""));
     sd.setCols(cols);
     table.setSd(sd);

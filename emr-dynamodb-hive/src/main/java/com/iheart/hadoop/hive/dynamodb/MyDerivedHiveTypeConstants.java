@@ -17,11 +17,6 @@ import org.apache.hadoop.hive.serde.Constants;
 
 public class MyDerivedHiveTypeConstants extends DerivedHiveTypeConstants {
 
-//  public static final String BIGINT_ARRAY_TYPE_NAME = Constants.LIST_TYPE_NAME + "<" + Constants
-//    .BIGINT_TYPE_NAME + ">";
-//  public static final String STRING_ARRAY_TYPE_NAME = Constants.LIST_TYPE_NAME + "<" + Constants
-//    .STRING_TYPE_NAME + ">";
-
   public static final String STRING_BIGINT_MAP_TYPE_NAME = Constants.MAP_TYPE_NAME + "<" + Constants.STRING_TYPE_NAME
     + "," + Constants.BIGINT_TYPE_NAME + ">";
   public static final String STRING_DOUBLE_MAP_TYPE_NAME = Constants.MAP_TYPE_NAME + "<" + Constants.STRING_TYPE_NAME
@@ -35,8 +30,8 @@ public class MyDerivedHiveTypeConstants extends DerivedHiveTypeConstants {
     .STRING_TYPE_NAME + ">";
 
 
-//  public static final String LIST_ITEM_MAP_TYPE_NAME = Constants.LIST_TYPE_NAME + "<" +
-//    ITEM_MAP_TYPE_NAME + ">";
+  public static final String LIST_ITEM_MAP_TYPE_NAME = Constants.LIST_TYPE_NAME + "<" +
+    ITEM_MAP_TYPE_NAME + ">";
   public static final String LIST_STRING_BIG_INT_MAP_TYPE_NAME = Constants.LIST_TYPE_NAME + "<" +
     STRING_BIGINT_MAP_TYPE_NAME + ">";
   public static final String LIST_STRING_BIG_DOUBLE_MAP_TYPE_NAME = Constants.LIST_TYPE_NAME + "<" +

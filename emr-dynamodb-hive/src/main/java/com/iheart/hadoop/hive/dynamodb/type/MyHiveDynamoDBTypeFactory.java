@@ -35,6 +35,7 @@ public class MyHiveDynamoDBTypeFactory extends HiveDynamoDBTypeFactory {
     HIVE_TYPE_MAP.put(MyDerivedHiveTypeConstants.STRING_BIGINT_MAP_TYPE_NAME, MAP_TYPE);
     HIVE_TYPE_MAP.put(MyDerivedHiveTypeConstants.LIST_STRING_BIG_INT_MAP_TYPE_NAME, LIST_ITEM_TYPE);
     HIVE_TYPE_MAP.put(MyDerivedHiveTypeConstants.LIST_STRING_BIG_DOUBLE_MAP_TYPE_NAME, LIST_ITEM_TYPE);
+    HIVE_TYPE_MAP.put(MyDerivedHiveTypeConstants.LIST_ITEM_MAP_TYPE_NAME, LIST_ITEM_TYPE);
   }
 
   public static HiveDynamoDBType getTypeObjectFromHiveType(String hiveType) {
