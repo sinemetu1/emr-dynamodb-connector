@@ -55,10 +55,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class DynamoDBStorageHandler implements HiveMetaHook, HiveStoragePredicateHandler,
+public class DynamoDBStorageHandler2 implements HiveMetaHook, HiveStoragePredicateHandler,
     HiveStorageHandler {
 
-  private static final Log log = LogFactory.getLog(DynamoDBStorageHandler.class);
+  private static final Log log = LogFactory.getLog(DynamoDBStorageHandler2.class);
 
   private Configuration conf;
 

@@ -44,7 +44,7 @@ CREATE EXTERNAL TABLE hive_tablename (
     hive_column1_name column1_datatype,
     hive_column2_name column2_datatype
 )
-STORED BY 'org.apache.hadoop.hive.dynamodb.DynamoDBStorageHandler'
+STORED BY 'org.apache.hadoop.hive.dynamodb.DynamoDBStorageHandler2'
 TBLPROPERTIES (
     "dynamodb.table.name" = "dynamodb_tablename",
     "dynamodb.column.mapping" =

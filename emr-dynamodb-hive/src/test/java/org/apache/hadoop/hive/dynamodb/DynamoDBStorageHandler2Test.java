@@ -35,15 +35,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class DynamoDBStorageHandlerTest {
+public class DynamoDBStorageHandler2Test {
 
   @Rule
   public ExpectedException exceptionRule = ExpectedException.none();
-  protected DynamoDBStorageHandler storageHandler;
+  protected DynamoDBStorageHandler2 storageHandler;
 
   @Before
   public void setup() {
-    storageHandler = new DynamoDBStorageHandler();
+    storageHandler = new DynamoDBStorageHandler2();
   }
 
   @Test

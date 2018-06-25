@@ -16,7 +16,7 @@ import org.apache.hadoop.hive.dynamodb.type.HiveDynamoDBListTypeFactory;
 import org.apache.hadoop.hive.dynamodb.type.HiveDynamoDBType;
 import org.apache.hadoop.hive.serde2.AbstractSerDe;
 
-public class DynamoDBListStorageHandler extends DynamoDBStorageHandler {
+public class DynamoDBListStorageHandler extends DynamoDBStorageHandler2 {
   @Override
   protected boolean isHiveDynamoDBItemMapType(String type){
     return HiveDynamoDBListTypeFactory.isHiveDynamoDBItemMapType(type);
